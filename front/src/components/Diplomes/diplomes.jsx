@@ -4,6 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./diplome.css";
 import logo from "../../images/logo.png"; // Assurez-vous que le chemin est correct
+import axios from 'axios';
 
 const Diplomes = () => {
   const [etudiant, setEtudiant] = useState({ nom: '', prenom: '', cin: '', sexe: '', dateNaissance: '', lieuNaissance: '', email: '' });
@@ -43,19 +44,13 @@ const Diplomes = () => {
     const sanitizedPersons = persons.map((person) => sanitizePerson({ ...person }));
 
     try {
-      const response = await fetch(
+      const response = await axios.post(
         'http://localhost:3001/send-email',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ etudiant, person1: persons[0], person2: sanitizedPersons[1], person3: sanitizedPersons[2], person4: sanitizedPersons[3] }),
-          credentials: 'include'
-        }
+        { etudiant, person1: persons[0], person2: sanitizedPersons[1], person3: sanitizedPersons[2], person4: sanitizedPersons[3] },
+        { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
       );
 
-      if (response.ok) {
+      if (response.status === 200) {
         toast.success('Email envoyé avec succès');
         resetForm(); // Réinitialisation du formulaire après succès
       } else {
@@ -64,19 +59,13 @@ const Diplomes = () => {
 
       // Envoi de l'e-mail à l'étudiant
       try {
-        const studentEmailResponse = await fetch(
+        const studentEmailResponse = await axios.post(
           'http://localhost:3001/send-email',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ etudiant, persons: sanitizedPersons }),
-            credentials: 'include'
-          }
+          { etudiant, persons: sanitizedPersons },
+          { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
         );
 
-        if (!studentEmailResponse.ok) {
+        if (studentEmailResponse.status !== 200) {
           console.log('Échec de l\'envoi de l\'e-mail à l\'étudiant');
         }
       } catch (error) {
@@ -91,7 +80,6 @@ const Diplomes = () => {
       setProgress(0);
     }
   };
-
   return (
     <Container maxWidth="sm" className="diplome-container">
       <ToastContainer />
