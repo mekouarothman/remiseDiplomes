@@ -4,33 +4,33 @@ const bodyParser = require('body-parser');
 const { jsPDF } = require('jspdf');
 const QRCode = require('qrcode');
 const cors = require('cors');
-const path = require('path'); // Import the path library
+const path = require('path');
 const fs = require('fs');
-require('dotenv').config(); // Load dotenv to read .env file
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3001;
 
 app.use(bodyParser.json());
 
-// app.use(cors());  // Allow CORS requests
 
+// app.use(cors);
 
+app.use(bodyParser.json());
+// Configure CORS
 const corsOptions = {
-   origin: 'https://esisa-remisededeiplomes.vercel.app/',
+    origin: 'https://esisa-remisededeiplomes.vercel.app',
+    credentials: true,
+  };
+  app.use(cors(corsOptions));
+  
 
-   credentials: true,
- };
- app.use(cors(corsOptions));
- 
-
-// Import the logo
 const logoPath = path.join(__dirname, './images/logo.png');
 const logoBuffer = fs.readFileSync(logoPath);
 const logoBase64 = logoBuffer.toString('base64');
 
 app.post('/send-email', async (req, res) => {
-    const { etudiant, person1, person2, person3, person4 } = req.body;
+    const { etudiant, person1, person2, person3, person4, email } = req.body;
 
     try {
         // Generate QR code
@@ -44,7 +44,6 @@ app.post('/send-email', async (req, res) => {
         doc.text('Listes des invités', 105, 155, { align: 'center' });
 
         doc.setFontSize(10);
-        // Guest information
         const guests = [person1, person2, person3, person4];
         const positions = [
             { x: 50, y: 170 },
@@ -105,7 +104,7 @@ app.post('/send-email', async (req, res) => {
 
         const mailOptions = {
             from: 'info@esisa.ac.ma',
-            to: 'info@esisa.ac.ma',
+            to: ['info@esisa.ac.ma', email], // Send to both info@esisa.ac.ma and the student's email
             subject: 'Invitation à la cérémonie de remise de diplômes',
             text: 'Veuillez trouver ci-joint l\'invitation à la cérémonie de remise de diplômes.',
             attachments: [
@@ -118,23 +117,26 @@ app.post('/send-email', async (req, res) => {
         };
 
         // Send email
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                return res.status(500).send(error.toString());
-            }
-            // Send the PDF as a response to allow download
-            res.setHeader('Content-Type', 'application/pdf');
-            res.send(Buffer.from(pdfBuffer));
-        });
+     // Send email
+transporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+      console.error('Error sending email:', error); // Ajoutez cette ligne pour voir l'erreur détaillée
+      return res.status(500).send(error.toString());
+  }
+  // Send the PDF as a response to allow download
+  res.setHeader('Content-Type', 'application/pdf');
+  res.send(Buffer.from(pdfBuffer));
+});
 
     } catch (error) {
         console.error('Error generating QR code or PDF:', error);
         res.status(500).send('Server error');
     }
 });
+
 app.get('/', (req, res) => {
     res.send('Bonjour, vous êtes sur la page d\'accueil !');
-  });
+});
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
