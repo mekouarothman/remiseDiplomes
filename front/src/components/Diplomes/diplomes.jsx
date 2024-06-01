@@ -41,7 +41,11 @@ const Diplomes = () => {
     const sanitizedPerson4 = sanitizePerson({ ...person4 });
 
     try {
-      const response = await fetch('https://remise-diplomes-back.vercel.app/send-email', {
+      const response = await fetch(
+      //  'https://remise-diplomes-back.vercel.app/send-email',
+        'http://localhost:3001/send-email',
+
+        {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
