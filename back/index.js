@@ -12,14 +12,8 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 app.use(bodyParser.json());
+app.use(cors());
 
-// Configure CORS
-const corsOptions = {
-    origin: 'https://esisa-remisededeiplomes.vercel.app',
-    credentials: true,
-  };
-  app.use(cors(corsOptions));
-  
 // Import the logo
 const logoPath = path.join(__dirname, './images/logo.png');
 const logoBuffer = fs.readFileSync(logoPath);
@@ -29,8 +23,11 @@ app.post('/send-email', async (req, res) => {
   const { etudiant, person1, person2, person3, person4 } = req.body;
 
   try {
+    // Ensure all persons are properly defined
+    const guests = [person1, person2, person3, person4].filter(person => person); // Filter out undefined persons
+
     // Generate QR code
-    const qrData = `${person1.nom}, ${person1.prenom}, ${person1.cin}\n${person2.nom}, ${person2.prenom}, ${person2.cin}\n${person3.nom}, ${person3.prenom}, ${person3.cin}\n${person4.nom}, ${person4.prenom}, ${person4.cin}`;
+    const qrData = guests.map(person => `${person.nom}, ${person.prenom}, ${person.cin}`).join('\n');
     const qrDataURL = await QRCode.toDataURL(qrData);
 
     // Generate PDF
@@ -40,7 +37,6 @@ app.post('/send-email', async (req, res) => {
     doc.text('Listes des invités', 105, 155, { align: 'center' });
 
     doc.setFontSize(10);
-    const guests = [person1, person2, person3, person4];
     const positions = [
       { x: 50, y: 170 },
       { x: 120, y: 170 },
