@@ -56,15 +56,7 @@ const Diplomes = () => {
       );
 
       if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'invitation_diplomes.pdf';
-        document.body.appendChild(a); // Ajout à la fin du corps du document
-        a.click();
-        a.remove(); // Suppression après le téléchargement
-        toast.success('Email envoyé et PDF téléchargé avec succès');
+        toast.success('Email envoyé avec succès');
         resetForm(); // Réinitialisation du formulaire après succès
       } else {
         toast.error('Échec de l\'envoi de l\'email');
@@ -73,19 +65,19 @@ const Diplomes = () => {
       // Envoi de l'e-mail à l'étudiant
       try {
         const studentEmailResponse = await fetch(
-          'http://localhost:3001/send-email-student',
+          'http://localhost:3001/send-email',
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ etudiant }),
+            body: JSON.stringify({ etudiant, persons: sanitizedPersons }),
             credentials: 'include'
           }
         );
 
         if (!studentEmailResponse.ok) {
-          toast.error('Échec de l\'envoi de l\'e-mail à l\'étudiant');
+          console.log('Échec de l\'envoi de l\'e-mail à l\'étudiant');
         }
       } catch (error) {
         console.error('Erreur lors de l\'envoi de l\'e-mail à l\'étudiant :', error);
@@ -302,7 +294,7 @@ const Diplomes = () => {
           fullWidth
           sx={{ marginBottom: '20px' }}
         >
-          {loading ? <LinearProgress sx={{ width: '100%' }} /> : "Télécharger l'invitation"}
+          {loading ? <LinearProgress sx={{ width: '100%' }} /> : "Recevoit son invitation"}
         </Button>
       </form>
     </Container>
