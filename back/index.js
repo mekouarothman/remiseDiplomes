@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 
 // Configure CORS
 const corsOptions = {
-    origin: 'https://esisa-remisededeiplomes.vercel.app/',
+    origin: 'https://remise-diplomes-back.vercel.app/',
     credentials: true,
   };
   app.use(cors(corsOptions));
