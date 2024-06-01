@@ -75,7 +75,7 @@ const Diplomes = () => {
       }
     } catch (error) {
       console.error('Erreur :', error);
-      toast.error("Revenez demain :D ");
+      toast.error("Réessayez plus tard :p ");
     } finally {
       setLoading(false);
       setProgress(0);
