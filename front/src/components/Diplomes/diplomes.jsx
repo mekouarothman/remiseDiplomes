@@ -60,7 +60,10 @@ const Diplomes = () => {
       // Envoi de l'e-mail à l'étudiant
       try {
         const studentEmailResponse = await axios.post(
-          'http://localhost:3001/send-email',
+         // 'http://localhost:3001/send-email',
+
+          'https://remise-diplomes-back.vercel.app/send-email',
+
           { etudiant, persons: sanitizedPersons },
           { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
         );
@@ -70,7 +73,6 @@ const Diplomes = () => {
         }
       } catch (error) {
         console.error('Erreur lors de l\'envoi de l\'e-mail à l\'étudiant :', error);
-        toast.error("Réessayez plus tard pour l'envoi de l'e-mail à l'étudiant");
       }
     } catch (error) {
       console.error('Erreur :', error);
