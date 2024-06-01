@@ -15,6 +15,7 @@ const port = process.env.PORT ;
 
 app.use(bodyParser.json());
 
+app.use(cors);
 
 app.use(cors({
     origin: 'https://esisa-remisededeiplomes.vercel.app/',
