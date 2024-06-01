@@ -12,12 +12,12 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 app.use(bodyParser.json());
-app.use(cors());  // Allow CORS requests
+
+// app.use(cors());  // Allow CORS requests
 
 
 const corsOptions = {
-   origin: 'https://esisa-remisededeiplomes.vercel.app',
-  // origin: 'https://localhost:4000',
+   origin: 'https://esisa-remisededeiplomes.vercel.app/',
 
    credentials: true,
  };
