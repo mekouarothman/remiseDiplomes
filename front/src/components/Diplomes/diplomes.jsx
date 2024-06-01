@@ -4,10 +4,10 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./diplome.css";
 import logo from "../../images/logo.png"; // Assurez-vous que le chemin est correct
-import axios from 'axios';
+
 
 const Diplomes = () => {
-  const [etudiant, setEtudiant] = useState({ nom: '', prenom: '', cin: '', sexe: '', dateNaissance: '', lieuNaissance: '', email: '' });
+  const [etudiant, setEtudiant] = useState({ nom: '', prenom: '', cin: '', sexe: '', dateNaissance: '', lieuNaissance: '' });
   const [persons, setPersons] = useState([
     { nom: '', prenom: '', cin: '', sexe: '', dateNaissance: '', lieuNaissance: '' },
     { nom: '', prenom: '', cin: '', sexe: '', dateNaissance: '', lieuNaissance: '' },
@@ -18,7 +18,7 @@ const Diplomes = () => {
   const [progress, setProgress] = useState(0);
 
   const resetForm = () => {
-    setEtudiant({ nom: '', prenom: '', cin: '', sexe: '', dateNaissance: '', lieuNaissance: '', email: '' });
+    setEtudiant({ nom: '', prenom: '', cin: '', sexe: '', dateNaissance: '', lieuNaissance: '' });
     setPersons([
       { nom: '', prenom: '', cin: '', sexe: '', dateNaissance: '', lieuNaissance: '' },
       { nom: '', prenom: '', cin: '', sexe: '', dateNaissance: '', lieuNaissance: '' },
@@ -27,11 +27,13 @@ const Diplomes = () => {
     ]);
   };
 
+ 
+  
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setProgress(0);
-
+  
     const sanitizePerson = (person) => {
       for (const key in person) {
         if (person[key] === '') {
@@ -40,58 +42,57 @@ const Diplomes = () => {
       }
       return person;
     };
-
+  
     const sanitizedPersons = persons.map((person) => sanitizePerson({ ...person }));
-
+  
     try {
-      const response = await axios.post(
-        'http://localhost:3001/send-email',
-        { etudiant, person1: persons[0], person2: sanitizedPersons[1], person3: sanitizedPersons[2], person4: sanitizedPersons[3] },
-        { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
+      const response = await fetch(
+        'https://diplomes.vercel.app/send-email', // URL de votre backend déployé
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ etudiant, person1: persons[0], person2: sanitizedPersons[1], person3: sanitizedPersons[2], person4: sanitizedPersons[3] }),
+           credentials: 'include' 
+        }
       );
+  
 
-      if (response.status === 200) {
-        toast.success('Email envoyé avec succès');
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'invitation_diplomes.pdf';
+        document.body.appendChild(a); // Ajout à la fin du corps du document
+        a.click();
+        a.remove(); // Suppression après le téléchargement
+        toast.success('Email envoyé et PDF téléchargé avec succès');
         resetForm(); // Réinitialisation du formulaire après succès
       } else {
         toast.error('Échec de l\'envoi de l\'email');
       }
-
-      // Envoi de l'e-mail à l'étudiant
-      try {
-        const studentEmailResponse = await axios.post(
-         // 'http://localhost:3001/send-email',
-
-          'https://remise-diplomes-back.vercel.app/send-email',
-
-          { etudiant, persons: sanitizedPersons },
-          { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
-        );
-
-        if (studentEmailResponse.status !== 200) {
-          console.log('Échec de l\'envoi de l\'e-mail à l\'étudiant');
-        }
-      } catch (error) {
-        console.error('Erreur lors de l\'envoi de l\'e-mail à l\'étudiant :', error);
-      }
     } catch (error) {
       console.error('Erreur :', error);
-      toast.error("Réessayez plus tard :p ");
+      toast.error("Revenez demain :D ");
     } finally {
       setLoading(false);
       setProgress(0);
     }
   };
+  
+  
   return (
     <Container maxWidth="sm" className="diplome-container">
       <ToastContainer />
-
+  
       <img src={logo} alt="Logo" className="logo" />
-
+  
       <Typography variant="h5" align="center" gutterBottom>
         Remise de diplômes
       </Typography>
-
+  
       <form onSubmit={handleFormSubmit}>
         {/* Champs pour l'étudiant */}
         <Typography style={{ padding: '2rem' }} variant="h6" gutterBottom>
@@ -161,29 +162,18 @@ const Diplomes = () => {
             }
           />
         </Box>
-        <Box sx={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-          <TextField
-            required
-            fullWidth
-            label="Email"
-            variant="outlined"
-            value={etudiant.email}
-            onChange={(e) =>
-              setEtudiant({ ...etudiant, email: e.target.value })
-            }
-          />
-        </Box>
-
+  
         {/* Champs pour les invités */}
         <Typography style={{ padding: '2rem' }} variant="h6" gutterBottom>
           Informations sur les invités
         </Typography>
-
+  
         {persons.map((person, index) => (
           <Box key={index} sx={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '20px' }}>
             <h2 className="h2">{`Invité ${index + 1}`}</h2>
             <Box sx={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
               <TextField
+                
                 fullWidth
                 label={`Nom de l'invité ${index + 1}`}
                 variant="outlined"
@@ -197,6 +187,7 @@ const Diplomes = () => {
                 }
               />
               <TextField
+                
                 fullWidth
                 label={`Prénom de l'invité ${index + 1}`}
                 variant="outlined"
@@ -212,6 +203,7 @@ const Diplomes = () => {
             </Box>
             <Box sx={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
               <TextField
+                
                 fullWidth
                 label={`CIN de l'invité ${index + 1}`}
                 variant="outlined"
@@ -225,6 +217,7 @@ const Diplomes = () => {
                 }
               />
               <TextField
+                
                 fullWidth
                 label={`Date de Naissance de l'invité ${index + 1}`}
                 variant="outlined"
@@ -242,6 +235,7 @@ const Diplomes = () => {
             </Box>
             <Box sx={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
               <TextField
+                
                 fullWidth
                 label={`Lieu de Naissance de l'invité ${index + 1}`}
                 variant="outlined"
@@ -254,27 +248,28 @@ const Diplomes = () => {
                   })
                 }
               />
-              <TextField
-                select
-                fullWidth
-                label="Sexe"
-                variant="outlined"
-                value={person.sexe}
-                onChange={(e) =>
-                  setPersons(prevPersons => {
-                    const updatedPersons = [...prevPersons];
-                    updatedPersons[index] = { ...updatedPersons[index], sexe: e.target.value };
-                    return updatedPersons;
-                  })
-                }
-              >
-                <MenuItem value="M">Masculin</MenuItem>
-                <MenuItem value="F">Féminin</MenuItem>
-              </TextField>
+
+<TextField
+            select
+            fullWidth
+            label="Sexe"
+            variant="outlined"
+            value={person.sexe}
+            onChange={(e) =>
+              setPersons(prevPersons => {
+                const updatedPersons = [...prevPersons];
+                updatedPersons[index] = { ...updatedPersons[index], sexe: e.target.value };
+                return updatedPersons;
+              })
+            }
+          >
+            <MenuItem value="M">Masculin</MenuItem>
+            <MenuItem value="F">Féminin</MenuItem>
+          </TextField>
             </Box>
           </Box>
         ))}
-
+  
         <Button
           style={{ marginTop: '2rem' }}
           type="submit"
@@ -284,11 +279,11 @@ const Diplomes = () => {
           fullWidth
           sx={{ marginBottom: '20px' }}
         >
-          {loading ? <LinearProgress sx={{ width: '100%' }} /> : "Recevoit son invitation"}
+          {loading ? <LinearProgress sx={{ width: '100%' }} /> : "Télécharger l'invitation"}
         </Button>
       </form>
     </Container>
   );
 }
 
-export default Diplomes;
+export default Diplomes
