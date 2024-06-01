@@ -15,28 +15,27 @@ const port = process.env.PORT ;
 
 app.use(bodyParser.json());
 
-app.use(cors);
 
-app.use(cors({
-    origin: 'https://esisa-remisededeiplomes.vercel.app/',
-    credentials: true // autorise les en-têtes d'authentification comme les cookies et les jetons
-  }));
 
+//   app.use(cors());
+
+//   app.use(cors({
+//     origin: 'https://esisa-remisededeiplomes.vercel.app/',
+//     credentials: true // autorise les en-têtes d'authentification comme les cookies et les jetons
+//   }));
   
-//   const allowedOrigins = ['https://esisa-remisededeiplomes.vercel.app/'];
-
-// app.use(cors({
-//   origin: function(origin, callback) {
-//     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-//   credentials: true,
-// }));
-
-
+  app.use(cors({
+    origin: '*', // Autorise toutes les origines
+    credentials: true // Autorise les en-têtes d'authentification comme les cookies et les jetons
+  }));
+  
+  const corsOptions = {
+    origin: ['http://localhost:4000', 'https://esisa-remisededeiplomes.vercel.app'],
+    credentials: true // Autorise les en-têtes d'authentification comme les cookies et les jetons
+  };
+  
+  app.use(cors(corsOptions));
+  
 
 // Import the logo
 const logoPath = path.join(__dirname, './images/logo.png');
