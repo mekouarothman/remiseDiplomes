@@ -12,8 +12,14 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 app.use(bodyParser.json());
-app.use(cors());
-
+// Configure CORS
+const corsOptions = {
+    origin: 'https://esisa-remisededeiplomes.vercel.app',
+    credentials: true,
+  };
+  app.use(cors(corsOptions));
+  
+// Impo
 // Import the logo
 const logoPath = path.join(__dirname, './images/logo.png');
 const logoBuffer = fs.readFileSync(logoPath);
