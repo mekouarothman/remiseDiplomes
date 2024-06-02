@@ -20,6 +20,15 @@ app.use(cors({
   credentials: true // autorise les en-têtes d'authentification comme les cookies et les jetons
 }));
 
+const corsOptions = {
+  origin: 'https://esisa-remisededeiplomes.vercel.app',
+  methods: ['POST'],
+  allowedHeaders: ['Content-Type'],
+};
+
+app.use(cors(corsOptions));
+
+
 // const corsOptions = {
 //     origin: 'https://esisa-remisededeiplomes.vercel.app',
 //     credentials: true,
