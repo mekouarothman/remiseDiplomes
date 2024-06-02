@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { TextField, Button, Box, Container, Typography, MenuItem, LinearProgress, Grid } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from 'axios';
 import "./diplome.css";
 import logo from "../../images/logo.png"; 
 
@@ -41,34 +42,29 @@ const Diplomes = () => {
     const sanitizedPerson4 = sanitizePerson({ ...person4 });
 
     try {
-      const response = await fetch(
-       //  'https://remise-diplomes-back.vercel.app/send-email',
+      const response = await axios.post(
         'http://localhost:3001/send-email',
+        { etudiant, person1, person2: sanitizedPerson2, person3: sanitizedPerson3, person4: sanitizedPerson4 },
         {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ etudiant, person1, person2: sanitizedPerson2, person3: sanitizedPerson3, person4: sanitizedPerson4 }),
           onDownloadProgress: (progressEvent) => {
             const total = progressEvent.total;
             const current = progressEvent.loaded;
             setProgress(Math.round((current / total) * 100));
           },
+          responseType: 'blob',
         }
       );
 
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
+      if (response.status === 200) {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
         const a = document.createElement('a');
         a.href = url;
         a.download = 'invitation_diplomes.pdf';
-        document.body.appendChild(a); // Ajout à la fin du corps du document
+        document.body.appendChild(a);
         a.click();
-        a.remove(); // Suppression après le téléchargement
+        a.remove();
         toast.success('Email envoyé et PDF téléchargé avec succès');
-        resetForm();  // Réinitialisation du formulaire après succès
+        resetForm();
       } else {
         toast.error('Échec de l\'envoi de l\'email');
       }
