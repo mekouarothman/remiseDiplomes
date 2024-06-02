@@ -21,15 +21,14 @@ app.use(cors({
 }));
 
 const corsOptions = {
-  origin: 'https://esisa-remisededeiplomes.vercel.app',
+  origin: '*',
   methods: ['POST'],
   allowedHeaders: ['Content-Type'],
-  credentials: true,
 };
 
-const axiosInstance = axios.create({
-  timeout: 15000, // 15 seconds timeout
-});
+app.use(cors(corsOptions));
+
+
 app.use(cors(corsOptions));
 app.options('/send-email', cors(corsOptions));
 
