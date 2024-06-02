@@ -74,7 +74,7 @@ const Diplomes = () => {
       }
     } catch (error) {
       console.error('Erreur :', error);
-      toast.error('Une erreur s\'est produite');
+      toast.error('Disponible de 10h a 18h ...');
     } finally {
       setLoading(false);
       setProgress(0);
