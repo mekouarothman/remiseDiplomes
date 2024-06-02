@@ -23,6 +23,8 @@ const Diplomes = () => {
     setPerson4({ nom: '', prenom: '', cin: '', sexe: '', dateNaissance: '', lieuNaissance: '' });
   };
 
+  
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -43,7 +45,9 @@ const Diplomes = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:3001/send-email',
+       // 'http://localhost:3001/send-email',
+        'https://remise-diplomes-back.vercel.app/send-email',
+
         { etudiant, person1, person2: sanitizedPerson2, person3: sanitizedPerson3, person4: sanitizedPerson4 },
         {
           onDownloadProgress: (progressEvent) => {
@@ -78,6 +82,8 @@ const Diplomes = () => {
       setProgress(0);
     }
   };
+
+  
 
   return (
     <>

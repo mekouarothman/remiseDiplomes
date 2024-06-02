@@ -12,12 +12,19 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 app.use(bodyParser.json());
-// Configure CORS
-const corsOptions = {
-    origin: 'https://esisa-remisededeiplomes.vercel.app',
-    credentials: true,
-  };
-  app.use(cors(corsOptions));
+
+app.use(cors());
+
+app.use(cors({
+  origin: 'https://esisa-remisededeiplomes.vercel.app',
+  credentials: true // autorise les en-têtes d'authentification comme les cookies et les jetons
+}));
+
+// const corsOptions = {
+//     origin: 'https://esisa-remisededeiplomes.vercel.app',
+//     credentials: true,
+//   };
+//   app.use(cors(corsOptions));
   
 // Impo
 // Import the logo
