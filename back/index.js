@@ -1,9 +1,9 @@
 const express = require('express');
-const nodemailer = require('nodemailer');
+const cors = require('cors');
 const bodyParser = require('body-parser');
+const nodemailer = require('nodemailer');
 const { jsPDF } = require('jspdf');
 const QRCode = require('qrcode');
-const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
@@ -13,36 +13,18 @@ const port = process.env.PORT || 3001;
 
 app.use(bodyParser.json());
 
-const corsOptions = {
-  origin: 'https://esisa-remisededeiplomes.vercel.app', // Allow only this origin
-  methods: ['POST'],
-  allowedHeaders: ['Content-Type'],
-  credentials: true
-};
-
-app.use(cors(corsOptions));
-
-app.options('/send-email', cors(corsOptions));
-
-// Import the logo
-const logoPath = path.join(__dirname, './images/logo.png');
-const logoBuffer = fs.readFileSync(logoPath);
-const logoBase64 = logoBuffer.toString('base64');
+// Configurer CORS pour autoriser toutes les origines
+app.use(cors());
 
 app.post('/send-email', async (req, res) => {
   const { etudiant, person1, person2, person3, person4 } = req.body;
 
   try {
-    // Ensure all persons are properly defined
-    const guests = [person1, person2, person3, person4].filter(person => person); // Filter out undefined persons
-
-    // Generate QR code
+    const guests = [person1, person2, person3, person4].filter(person => person);
     const qrData = guests.map(person => `${person.nom}, ${person.prenom}, ${person.cin}`).join('\n');
     const qrDataURL = await QRCode.toDataURL(qrData);
 
-    // Generate PDF
     const doc = new jsPDF();
-
     doc.setFontSize(20);
     doc.text('Listes des invités', 105, 155, { align: 'center' });
 
@@ -95,7 +77,6 @@ app.post('/send-email', async (req, res) => {
 
     const pdfBuffer = doc.output('arraybuffer');
 
-    // Configure Nodemailer
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -104,7 +85,6 @@ app.post('/send-email', async (req, res) => {
       },
     });
 
-    // Email options for ESISA
     const mailOptionsESISA = {
       from: 'info@esisa.ac.ma',
       to: 'info@esisa.ac.ma',
@@ -119,7 +99,6 @@ app.post('/send-email', async (req, res) => {
       ],
     };
 
-    // Email options for Student
     const mailOptionsStudent = {
       from: 'info@esisa.ac.ma',
       to: etudiant.email,
@@ -134,21 +113,18 @@ app.post('/send-email', async (req, res) => {
       ],
     };
 
-    // Send email to ESISA
     transporter.sendMail(mailOptionsESISA, (error, info) => {
       if (error) {
         console.error('Error sending email to ESISA:', error);
         return res.status(500).send(error.toString());
       }
 
-      // Send email to Student
       transporter.sendMail(mailOptionsStudent, (error, info) => {
         if (error) {
           console.error('Error sending email to Student:', error);
           return res.status(500).send(error.toString());
         }
 
-        // Send the PDF as a response to allow download
         res.setHeader('Content-Type', 'application/pdf');
         res.send(Buffer.from(pdfBuffer));
       });
