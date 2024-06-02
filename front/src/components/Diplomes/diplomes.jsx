@@ -43,13 +43,8 @@ const Diplomes = () => {
     const sanitizedPerson3 = sanitizePerson({ ...person3 });
     const sanitizedPerson4 = sanitizePerson({ ...person4 });
 
-
-const axiosInstance = axios.create({
-  timeout: 15000, // 15 seconds timeout
-});
-
     try {
-      const response = await axiosInstance.post(
+      const response = await axios.post(
        // 'http://localhost:3001/send-email',
         'https://remise-diplomes-back.vercel.app/send-email',
 

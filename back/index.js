@@ -13,19 +13,14 @@ const port = process.env.PORT || 3001;
 
 app.use(bodyParser.json());
 
-app.use(cors());
-
-app.use(cors({
-  origin: 'https://esisa-remisededeiplomes.vercel.app',
-  credentials: true // autorise les en-têtes d'authentification comme les cookies et les jetons
-}));
-
 const corsOptions = {
-  origin: 'https://esisa-remisededeiplomes.vercel.app',
+  origin: '*',
   methods: ['POST'],
   allowedHeaders: ['Content-Type'],
-  credentials: true,
 };
+
+app.use(cors(corsOptions));
+
 
 const axiosInstance = axios.create({
   timeout: 15000, // 15 seconds timeout
