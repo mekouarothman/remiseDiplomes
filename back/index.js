@@ -13,33 +13,17 @@ const port = process.env.PORT || 3001;
 
 app.use(bodyParser.json());
 
-app.use(cors());
-
-app.use(cors({
-  origin: 'https://esisa-remisededeiplomes.vercel.app',
-  credentials: true // autorise les en-têtes d'authentification comme les cookies et les jetons
-}));
-
 const corsOptions = {
-  origin: '*',
+  origin: 'https://esisa-remisededeiplomes.vercel.app', // Allow only this origin
   methods: ['POST'],
   allowedHeaders: ['Content-Type'],
+  credentials: true
 };
 
 app.use(cors(corsOptions));
 
-
-app.use(cors(corsOptions));
 app.options('/send-email', cors(corsOptions));
 
-
-// const corsOptions = {
-//     origin: 'https://esisa-remisededeiplomes.vercel.app',
-//     credentials: true,
-//   };
-//   app.use(cors(corsOptions));
-  
-// Impo
 // Import the logo
 const logoPath = path.join(__dirname, './images/logo.png');
 const logoBuffer = fs.readFileSync(logoPath);
