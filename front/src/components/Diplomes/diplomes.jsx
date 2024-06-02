@@ -42,8 +42,8 @@ const Diplomes = () => {
 
     try {
       const response = await fetch(
-         'https://remise-diplomes-back.vercel.app/send-email',
-       // 'http://localhost:3001/send-email',
+       //  'https://remise-diplomes-back.vercel.app/send-email',
+        'http://localhost:3001/send-email',
         {
           method: 'POST',
           headers: {
