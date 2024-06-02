@@ -27,6 +27,9 @@ const corsOptions = {
   credentials: true,
 };
 
+const axiosInstance = axios.create({
+  timeout: 15000, // 15 seconds timeout
+});
 app.use(cors(corsOptions));
 app.options('/send-email', cors(corsOptions));
 
