@@ -21,12 +21,9 @@ app.post('/send-email', async (req, res) => {
   const { etudiant, person1, person2, person3, person4 } = req.body;
 
   try {
-    console.log('Received request with data:', req.body);
-
     const guests = [person1, person2, person3, person4].filter(person => person);
     const qrData = guests.map(person => `${person.nom}, ${person.prenom}, ${person.cin}`).join('\n');
     const qrDataURL = await QRCode.toDataURL(qrData);
-    console.log('Generated QR Code Data URL');
 
     const doc = new jsPDF();
     doc.setFontSize(20);
@@ -80,7 +77,6 @@ app.post('/send-email', async (req, res) => {
     doc.text("L'équipe administrative de l'ESISA", 130, 275);
 
     const pdfBuffer = doc.output('arraybuffer');
-    console.log('Generated PDF buffer');
 
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -118,14 +114,12 @@ app.post('/send-email', async (req, res) => {
       ],
     };
 
-    console.log('Sending email to ESISA...');
     transporter.sendMail(mailOptionsESISA, (error, info) => {
       if (error) {
         console.error('Error sending email to ESISA:', error);
         return res.status(500).send(error.toString());
       }
 
-      console.log('Sending email to Student...');
       transporter.sendMail(mailOptionsStudent, (error, info) => {
         if (error) {
           console.error('Error sending email to Student:', error);
@@ -134,7 +128,6 @@ app.post('/send-email', async (req, res) => {
 
         res.setHeader('Content-Type', 'application/pdf');
         res.send(Buffer.from(pdfBuffer));
-        console.log('Email sent successfully and PDF sent as response');
       });
     });
 
@@ -142,4 +135,12 @@ app.post('/send-email', async (req, res) => {
     console.error('Error generating QR code or PDF:', error);
     res.status(500).send('Server error');
   }
+});
+
+app.get('/', (req, res) => {
+  res.send('Bonjour, vous êtes sur la page d\'accueil !');
+});
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
 });
