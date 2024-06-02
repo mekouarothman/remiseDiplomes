@@ -24,6 +24,7 @@ const corsOptions = {
   origin: 'https://esisa-remisededeiplomes.vercel.app',
   methods: ['POST'],
   allowedHeaders: ['Content-Type'],
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
