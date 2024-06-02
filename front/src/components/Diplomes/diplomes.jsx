@@ -3,7 +3,7 @@ import { TextField, Button, Box, Container, Typography, MenuItem, LinearProgress
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./diplome.css";
-import logo from "../../images/logo.png"; // Assurez-vous que le chemin est correct
+import logo from "../../images/logo.png"; 
 
 const Diplomes = () => {
   const [etudiant, setEtudiant] = useState({ nom: '', prenom: '', cin: '', sexe: '', dateNaissance: '', lieuNaissance: '', email: '' });
@@ -42,8 +42,8 @@ const Diplomes = () => {
 
     try {
       const response = await fetch(
-        // 'https://remise-diplomes-back.vercel.app/send-email',
-        'http://localhost:3001/send-email',
+         'https://remise-diplomes-back.vercel.app/send-email',
+       // 'http://localhost:3001/send-email',
         {
           method: 'POST',
           headers: {
