@@ -27,6 +27,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.options('/send-email', cors(corsOptions));
 
 
 // const corsOptions = {
