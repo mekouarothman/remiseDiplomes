@@ -13,12 +13,12 @@ const port = process.env.PORT || 3001;
 
 app.use(bodyParser.json());
 
-app.use(cors());
+// app.use(cors());
 
-app.use(cors({
-  origin: 'https://esisa-remisededeiplomes.vercel.app',
-  credentials: true // autorise les en-têtes d'authentification comme les cookies et les jetons
-}));
+// app.use(cors({
+//   origin: 'https://esisa-remisededeiplomes.vercel.app',
+//   credentials: true // autorise les en-têtes d'authentification comme les cookies et les jetons
+// }));
 
 const corsOptions = {
   origin: '*',
