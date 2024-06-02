@@ -47,9 +47,11 @@ const Diplomes = () => {
         { etudiant, person1, person2: sanitizedPerson2, person3: sanitizedPerson3, person4: sanitizedPerson4 },
         {
           onDownloadProgress: (progressEvent) => {
-            const total = progressEvent.total;
+            const total = progressEvent.total || progressEvent.target.getResponseHeader('content-length');
             const current = progressEvent.loaded;
-            setProgress(Math.round((current / total) * 100));
+            if (total) {
+              setProgress(Math.round((current / total) * 100));
+            }
           },
           responseType: 'blob',
         }
