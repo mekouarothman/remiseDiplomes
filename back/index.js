@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 
 // Configurer CORS pour autoriser toutes les origines
 app.use(cors());
-// const logoBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...";
+const logoBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...";
 
 app.post('/send-email', async (req, res) => {
   const { etudiant, person1, person2, person3, person4 } = req.body;
@@ -58,7 +58,7 @@ app.post('/send-email', async (req, res) => {
     const imgHeight = 50;
     const x = (pageWidth - imgWidth) / 2;
     const y = 0;
-    // doc.addImage(logoBase64, "PNG", x, y, imgWidth, imgHeight);
+    doc.addImage(logoBase64, "PNG", x, y, imgWidth, imgHeight);
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);

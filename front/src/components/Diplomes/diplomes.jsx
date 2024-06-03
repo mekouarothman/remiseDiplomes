@@ -45,8 +45,8 @@ const Diplomes = () => {
 
     try {
       const response = await axios.post(
-       // 'http://localhost:3001/send-email',
-        'https://remise-diplomes-back.vercel.app/send-email',
+        'http://localhost:3001/send-email',
+       // 'https://remise-diplomes-back.vercel.app/send-email',
 
         { etudiant, person1, person2: sanitizedPerson2, person3: sanitizedPerson3, person4: sanitizedPerson4 },
         {
@@ -76,7 +76,7 @@ const Diplomes = () => {
       }
     } catch (error) {
       console.error('Erreur :', error);
-      toast.error('Disponible de 10h a 18h ...');
+      toast.error('Invitations Terminés depuis Lundi 3 Juin 16h ...');
     } finally {
       setLoading(false);
       setProgress(0);
